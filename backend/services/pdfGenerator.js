@@ -69,11 +69,17 @@ class PDFGenerator {
       workOrderData.orderNumber
     );
 
+    // Generate QR code for Design ID with format http://{orderNumber}.ai
+    const designIdQRCode = await this.generateQRCode(
+      `http://${workOrderData.orderNumber}.ai`
+    );
+
     // Generate HTML content for the work order
     const htmlContent = this.generateWorkOrderHTML(
       workOrderData,
       qrCodeDataURL,
-      barcodeDataURL
+      barcodeDataURL,
+      designIdQRCode
     );
 
     await page.setContent(htmlContent, { waitUntil: "networkidle0" });
@@ -96,12 +102,13 @@ class PDFGenerator {
   }
 
   // Generate HTML content for work order
-  generateWorkOrderHTML(data, qrCodeDataURL, barcodeDataURL) {
+  generateWorkOrderHTML(data, qrCodeDataURL, barcodeDataURL, designIdQRCode) {
     const {
       orderNumber,
       productSku,
       sku,
       description,
+      name,
       warehouseLocation,
       batchId,
       designId,
@@ -255,6 +262,64 @@ class PDFGenerator {
               margin: 8px 0;
               width: 100%;
             }
+            .order-id-section {
+              margin: 8px 0;
+              text-align: left;
+            }
+            .order-id-label {
+              font-weight: bold;
+              font-size: 12px;
+              color: #333;
+            }
+            .order-id-value {
+              font-size: 12px;
+              color: #333;
+              font-weight: bold;
+            }
+            .product-table {
+              width: 100%;
+              border-collapse: collapse;
+              margin: 8px 0;
+            }
+            .th2 {
+              background-color: #f8f9fa;
+              border: 1px solid #333;
+              padding: 6px;
+              font-weight: bold;
+              font-size: 10px;
+              color: #333;
+            }
+            .th2:first-child {
+              background-color: #FFFFFF;
+              color: black;
+              border-top: 1px solid black;
+              border-right: 1px solid black;
+              border-bottom: 1px solid black;
+            }
+            .td2 {
+              border: 1px solid #333;
+              padding: 6px;
+              font-size: 9px;
+              color: #333;
+            }
+            .product-info {
+              line-height: 1.2;
+            }
+            .product-name {
+              font-weight: normal;
+              margin-bottom: 2px;
+              text-overflow: ellipsis;
+              max-width: 2in;
+              overflow: hidden;
+              white-space: nowrap;
+            }
+            .product-sku {
+              margin-bottom: 2px;
+              font-weight: bold;
+            }
+            .product-sku-alt {
+              font-weight: normal;
+            }
             .barcode-container {
               text-align: center;
             }
@@ -274,6 +339,15 @@ class PDFGenerator {
               justify-content: center;
               color: #999;
               font-size: 10px;
+              margin: 0 auto;
+            }
+            .design-id-qr {
+              text-align: center;
+            }
+            .design-id-qr img {
+              max-width: 50px;
+              max-height: 50px;
+              display: block;
               margin: 0 auto;
             }
           </style>
@@ -304,6 +378,46 @@ class PDFGenerator {
           </div>
           
           <div class="full-width-divider"></div>
+          
+          <div class="order-id-section">
+            <span class="order-id-label">Order ID:</span>
+            <span class="order-id-value">${orderNumber}</span>
+          </div>
+          
+          <table class="product-table">
+            <thead>
+              <tr>
+                <th class="th2" align="left" style="width:4.7in;">Product Details</th>
+                <th class="th2" align="center" style="width:1.4in;">Design ID</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td2">
+                  <div class="product-info">
+                    <div class="product-name">${
+                      data.name || "Product Name"
+                    }</div>
+                    <div class="product-sku">Sku: ${productSku || "N/A"}</div>
+                    <div class="product-sku-alt">SKU: ${sku || "N/A"}</div>
+                  </div>
+                </td>
+                <td class="td2" align="center">
+                  <div class="design-id-qr">
+                    ${
+                      designIdQRCode
+                        ? `
+                      <img src="${designIdQRCode}" alt="Design ID QR Code" />
+                    `
+                        : `
+                      <div>N/A</div>
+                    `
+                    }
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </body>
       </html>
     `;

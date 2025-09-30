@@ -2,6 +2,7 @@ const API_BASE_URL = "http://localhost:5000/api";
 
 export interface WorkOrderData {
   orderNumber: string;
+  name: string;
   productSku: string;
   sku: string;
   description?: string;

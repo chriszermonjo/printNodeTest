@@ -12,6 +12,7 @@ function App(): JSX.Element {
   // Sample work order data - replace with your actual data
   const sampleWorkOrder: WorkOrderData = {
     orderNumber: "ORD-001",
+    name: "Personalized KJV Reference Bible Faux Leather Large Print Size | Custom with Name | Gift for Christian & Religious Celebrations | Pink",
     productSku: "SKU-ABC",
     sku: "SKU-ABC1",
     description: "Custom T-Shirt Design",
