@@ -350,6 +350,11 @@ class PDFGenerator {
               display: block;
               margin: 0 auto;
             }
+            .custom-info-plain {
+              margin: 4px 0;
+              font-size: 9px;
+              color: #333;
+            }
           </style>
         </head>
         <body>
@@ -418,6 +423,17 @@ class PDFGenerator {
               </tr>
             </tbody>
           </table>
+          
+          ${
+            customInfo
+              ? `
+          <div class="custom-info-plain">
+            <strong>Custom Info:</strong><br/>
+            ${customInfo.replace(/\n/g, "<br/>")}
+          </div>
+          `
+              : ""
+          }
         </body>
       </html>
     `;
