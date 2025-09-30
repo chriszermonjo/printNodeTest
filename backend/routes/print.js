@@ -15,7 +15,7 @@ router.post("/preview", async (req, res) => {
     const workOrderData = req.body;
     console.log(workOrderData);
 
-    // Generate PDF buffer
+    // Generate PDF buffer - handle both single work order and array
     const pdfBuffer = await pdfGenerator.generateWorkOrderPDF(workOrderData);
 
     // Set headers for PDF response
@@ -48,14 +48,19 @@ router.post("/print", async (req, res) => {
       });
     }
 
-    // Generate PDF buffer
+    // Generate PDF buffer - handle both single work order and array
     const pdfBuffer = await pdfGenerator.generateWorkOrderPDF(workOrderData);
+
+    // Determine title based on whether it's single or multiple work orders
+    const title = Array.isArray(workOrderData)
+      ? `Work Orders - ${workOrderData.length} items`
+      : `Work Order - ${workOrderData.orderNumber}`;
 
     // Print using PrintNode
     const printJob = await printNodeService.printPDF(
       pdfBuffer,
       printerId,
-      `Work Order - ${workOrderData.orderNumber}`
+      title
     );
 
     res.json({

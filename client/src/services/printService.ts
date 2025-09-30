@@ -10,7 +10,12 @@ export interface WorkOrderData {
   batchId?: string;
   designId?: string;
   imageUrl?: string;
-  customInfo?: string;
+  customInfo?: {
+    customerNotes?: string;
+    customField1?: string;
+    customField2?: string;
+    customField3?: string;
+  };
   shipTo?: string;
 }
 
@@ -40,7 +45,9 @@ class PrintService {
   }
 
   // Generate PDF preview
-  async generatePreview(workOrderData: WorkOrderData): Promise<string> {
+  async generatePreview(
+    workOrderData: WorkOrderData | WorkOrderData[]
+  ): Promise<string> {
     try {
       const response = await fetch(`${API_BASE_URL}/print/preview`, {
         method: "POST",
@@ -63,9 +70,9 @@ class PrintService {
     }
   }
 
-  // Print work order
+  // Print work order(s)
   async printWorkOrder(
-    workOrderData: WorkOrderData,
+    workOrderData: WorkOrderData | WorkOrderData[],
     printerId: string
   ): Promise<PrintJobResponse> {
     try {
