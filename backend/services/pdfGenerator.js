@@ -452,10 +452,9 @@ class PDFGenerator {
           </table>
           
           ${
-            customInfo
+            this.hasCustomInfo(customInfo)
               ? `
           <div class="custom-info-plain">
-            <strong>Custom Info:</strong><br/>
             ${this.formatCustomInfo(customInfo)}
           </div>
           `
@@ -464,6 +463,17 @@ class PDFGenerator {
         </body>
       </html>
     `;
+  }
+
+  // Check if customInfo has any non-empty values
+  hasCustomInfo(customInfo) {
+    if (!customInfo || typeof customInfo !== "object") {
+      return false;
+    }
+
+    return Object.values(customInfo).some(
+      (value) => value && typeof value === "string" && value.trim() !== ""
+    );
   }
 
   // Format customInfo object into HTML
@@ -477,11 +487,16 @@ class PDFGenerator {
     // Handle each field in the customInfo object
     Object.entries(customInfo).forEach(([key, value]) => {
       if (value && value.trim() !== "") {
-        // Convert camelCase to readable format
-        const readableKey = key
-          .replace(/([A-Z])/g, " $1")
-          .replace(/^./, (str) => str.toUpperCase());
-        formattedInfo += `${readableKey}: ${value}<br/>`;
+        // For customerNotes and customField1, customField2, customField3, display only the value
+        if (key === "customerNotes" || key.startsWith("customField")) {
+          formattedInfo += `${value}<br/>`;
+        } else {
+          // For other fields, keep the label format
+          const readableKey = key
+            .replace(/([A-Z])/g, " $1")
+            .replace(/^./, (str) => str.toUpperCase());
+          formattedInfo += `${readableKey}: ${value}<br/>`;
+        }
       }
     });
 
