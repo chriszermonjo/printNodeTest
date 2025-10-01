@@ -420,7 +420,7 @@ class PDFGenerator {
             <thead>
               <tr>
                 <th class="th2" align="left" style="width:4.7in;">Product Details</th>
-                <th class="th2" align="center" style="width:1.4in;">Design ID</th>
+                <th class="th2" align="center" style="width:1.4in; background-color: #FFFFFF; color: black; border-top: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black;">Design ID</th>
               </tr>
             </thead>
             <tbody>
